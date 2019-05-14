@@ -33,26 +33,17 @@ return [
                 ],
             ],
         ],
-        'view' => [
-          'theme' => [
-              'basePath' => '@app/themes/23F',
-              'baseUrl' => '@web/themes/23F',
-              'pathMap' => [
-                '@app/views' => '@app/themes/23F',
-              ],
-          ]
-        ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
+
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-        */
+
     ],
     'params' => $params,
 ];

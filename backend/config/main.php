@@ -12,6 +12,7 @@ return [
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
     'modules' => [],
+    'layout' => 'admin-lte/main',
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-backend',
@@ -34,26 +35,17 @@ return [
                 ],
             ],
         ],
-
-//        'view' => [
-//            'theme' => [
-//                'pathMap' => [
-//                    '@app/views' => '@vendor/dmstr/yii2-adminlte-asset/example-views/testing/app'
-//                ],
-//            ],
-//        ],
-
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
+
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-        */
+
     ],
     'params' => $params,
 ];
