@@ -13,7 +13,7 @@ class MyCest
     public function tryToTest(FunctionalTester $I, \Codeception\Example $data)
     {
         $I->amOnPage($data['url']);
-        $I->see($data['h1'], 'h1');
+        $I->see($data['h1'], 'li>active>a');
     }
 
     protected function pageProvider()
