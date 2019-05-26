@@ -14,6 +14,22 @@ document.getElementById("btn-chat")
         let textMesssage = document.getElementById('btn-input').value;
         let user = document.getElementById('user').value;
         let data = {textMesssage, user};
+
+        const $li = $(`<li class="left clearfix"><span class="chat-img pull-left">
+                            <img src="http://placehold.it/50/55C1E7/fff&text=Me" alt="User Avatar" class="img-circle" />
+                        </span>
+                            <div class="chat-body clearfix">
+                                <div class="header">
+                                    <strong class="primary-font">${data.user}</strong> <small class="pull-right text-muted">
+                                        <span class="glyphicon glyphicon-time"></span>${formatAMPM(new Date())}</small>
+                                </div>
+                                <p>
+                                ${data.textMesssage}
+                                </p>
+                            </div>
+                        </li>`);
+        $('.chat').append($li);
+
         data = JSON.stringify(data);
         conn.send(data);
         return false;
@@ -37,8 +53,8 @@ conn.onmessage = function (e) {
     $('.chat').append($li);
 
     let $el = $('li.messages-menu ul.menu li:first').clone();
-    $el.find('p').text(e.data);
-    $el.find('h4').text('Websocket user');
+    $el.find('p').text(data.textMesssage);
+    $el.find('h4').text(data.user);
     $el.prependTo('li.messages-menu ul.menu');
 
     let cnt = $('li.messages-menu ul.menu li').length;

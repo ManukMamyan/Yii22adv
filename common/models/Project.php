@@ -21,9 +21,14 @@ use yii\behaviors\BlameableBehavior;
  * @property User $creator
  * @property User $updater
  * @property ProjectUser[] $projectUsers
+ * @property Task[] $projectTasks
  */
 class Project extends \yii\db\ActiveRecord
 {
+    const RELATION_TASKS_PROJECT_ID = 'projectTasks';
+    const RELATION_PROJECT_USER = 'projectUsers';
+    const RELATION_PROJECTS_CREATOR_ID = 'creator';
+    const RELATION_PROJECTS_UPDATER_ID = 'updater';
     /**
      * {@inheritdoc}
      */
@@ -38,7 +43,7 @@ class Project extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'description', 'creator_id', 'created_at'], 'required'],
+            [['title', 'description'], 'required'],
             [['description'], 'string'],
             [['active', 'creator_id', 'updater_id', 'created_at', 'updated_at'], 'integer'],
             [['title'], 'string', 'max' => 255],
@@ -81,6 +86,14 @@ class Project extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getProjectTasks ()
+    {
+        return $this->hasMany(Task::class, ['project_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getCreator()
     {
         return $this->hasOne(User::className(), ['id' => 'creator_id']);
@@ -110,4 +123,5 @@ class Project extends \yii\db\ActiveRecord
     {
         return new \common\models\query\ProjectQuery(get_called_class());
     }
+
 }

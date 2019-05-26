@@ -1,4 +1,4 @@
-<!--<textarea id="chatMessages" cols="100" rows="10"></textarea>-->
+
 <div class="container">
     <div class="row">
         <div class="col-md-5">
