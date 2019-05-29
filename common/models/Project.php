@@ -47,8 +47,8 @@ class Project extends \yii\db\ActiveRecord
             [['description'], 'string'],
             [['active', 'creator_id', 'updater_id', 'created_at', 'updated_at'], 'integer'],
             [['title'], 'string', 'max' => 255],
-            [['creator_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['creator_id' => 'id']],
-            [['updater_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['updater_id' => 'id']],
+            [['creator_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['creator_id' => 'id']],
+            [['updater_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['updater_id' => 'id']],
         ];
     }
 
@@ -96,7 +96,7 @@ class Project extends \yii\db\ActiveRecord
      */
     public function getCreator()
     {
-        return $this->hasOne(User::className(), ['id' => 'creator_id']);
+        return $this->hasOne(User::class, ['id' => 'creator_id']);
     }
 
     /**
@@ -104,7 +104,7 @@ class Project extends \yii\db\ActiveRecord
      */
     public function getUpdater()
     {
-        return $this->hasOne(User::className(), ['id' => 'updater_id']);
+        return $this->hasOne(User::class, ['id' => 'updater_id']);
     }
 
     /**
@@ -112,7 +112,7 @@ class Project extends \yii\db\ActiveRecord
      */
     public function getProjectUsers()
     {
-        return $this->hasMany(ProjectUser::className(), ['project_id' => 'id']);
+        return $this->hasMany(ProjectUser::class, ['project_id' => 'id']);
     }
 
     /**

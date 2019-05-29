@@ -1,6 +1,8 @@
 <?php
+
 namespace common\models;
 
+use mohorev\file\UploadImageBehavior;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -31,9 +33,30 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+    private $password;
+
     const STATUS_DELETED = 0;
     const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
+
+    const STATUSES =
+        [
+            self::STATUS_DELETED,
+            self::STATUS_INACTIVE,
+            self::STATUS_ACTIVE,
+        ];
+
+    const STATUS_LABELS =
+        [
+            self::STATUS_DELETED => 'Удален',
+            self::STATUS_INACTIVE => 'Не активный',
+            self::STATUS_ACTIVE => 'Активный',
+        ];
+
+    const AVATAR_PREVIEW = 'preview';
+    const AVATAR_ICO = 'ico';
+    const SCENARIO_INSERT = 'insert';
+    const SCENARIO_UPDATE = 'update';
 
     const RELATION_TASKS_EXECUTOR_ID = 'activeTasks';
     const RELATION_TASKS_CREATOR_ID = 'createdTasks';
@@ -57,7 +80,19 @@ class User extends ActiveRecord implements IdentityInterface
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            TimestampBehavior::class,
+            [
+                'class' => UploadImageBehavior::class,
+                'attribute' => 'avatar',
+                'scenarios' => [self::SCENARIO_UPDATE],
+                //'placeholder' => '@app/modules/user/assets/images/userpic.jpg',
+                'path' => '@frontend/web/upload/user/{id}',
+                'url' => Yii::$app->params['hosts.front'] . Yii::getAlias('@web/upload/user/{id}'),
+                'thumbs' => [
+                    self::AVATAR_ICO => ['width' => 30, 'height' => 30, 'quality' => 90],
+                    self::AVATAR_PREVIEW => ['width' => 200, 'height' => 200],
+                ],
+            ],
         ];
     }
 
@@ -67,15 +102,20 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            ['status', 'default', 'value' => self::STATUS_INACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            [['username', 'email', 'password'], 'safe'],
+            [['avatar'], 'default', 'value' => 'avatar'],
+            [['username', 'email'], 'required'],
+            [['email'], 'email'],
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['status', 'in', 'range' => self::STATUSES],
+            ['avatar', 'image', 'extensions' => 'jpg, jpeg, gif, png', 'on' => self::SCENARIO_UPDATE],
         ];
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getActiveTasks ()
+    public function getActiveTasks()
     {
         return $this->hasMany(Task::class, ['executor_id' => 'id']);
     }
@@ -94,7 +134,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @return \yii\db\ActiveQuery
      */
 
-    public function getUpdatedTasks ()
+    public function getUpdatedTasks()
     {
         return $this->hasMany(Task::class, ['updater_id' => 'id']);
     }
@@ -103,7 +143,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @return \yii\db\ActiveQuery
      */
 
-    public function getCreatedProjects ()
+    public function getCreatedProjects()
     {
         return $this->hasMany(Project::class, ['creator_id' => 'id']);
     }
@@ -112,7 +152,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @return \yii\db\ActiveQuery
      */
 
-    public function getUpdatedProjects ()
+    public function getUpdatedProjects()
     {
         return $this->hasMany(Project::class, ['creator_id' => 'id']);
     }
@@ -131,7 +171,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        return static::findOne(['access_token' => $token, 'status' =>self::STATUS_ACTIVE]);
+        return static::findOne(['access_token' => $token, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
@@ -169,7 +209,8 @@ class User extends ActiveRecord implements IdentityInterface
      * @param string $token verify email token
      * @return static|null
      */
-    public static function findByVerificationToken($token) {
+    public static function findByVerificationToken($token)
+    {
         return static::findOne([
             'verification_token' => $token,
             'status' => self::STATUS_INACTIVE
@@ -188,7 +229,7 @@ class User extends ActiveRecord implements IdentityInterface
             return false;
         }
 
-        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
+        $timestamp = (int)substr($token, strrpos($token, '_') + 1);
         $expire = Yii::$app->params['user.passwordResetTokenExpire'];
         return $timestamp + $expire >= time();
     }
@@ -235,7 +276,18 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function setPassword($password)
     {
-        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+        $this->password = $password;
+        if ($password) {
+            $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPassword()
+    {
+        return $this->password;
     }
 
     /**
@@ -265,5 +317,17 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    public function beforeSave($insert)
+    {
+        If (!parent::beforeSave($insert)) {
+            return false;
+        }
+
+        if ($insert) {
+            $this->generateAuthKey();
+        }
+        return true;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace frontend\modules\api\models;
 
+use yii\helpers\StringHelper;
 /**
  * Class Task
  * @package frontend\modules\api\models
@@ -17,7 +18,7 @@ class Task extends \common\models\Task
             'id',
             'title',
             'description_short' => function () {
-                return substr($this->description, 0, 50);
+                return StringHelper::truncate($this->description, 50, '...');
             },
         ];
     }
