@@ -30,6 +30,8 @@ use yii\web\IdentityInterface;
  *
  * @property Project[] $createdProjects
  * @property Project[] $updatedProjects
+ *
+ * * @property ProjectUser[] $projectUsers
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -64,6 +66,8 @@ class User extends ActiveRecord implements IdentityInterface
 
     const RELATION_PROJECT_CREATOR_ID = 'createdProjects';
     const RELATION_PROJECT_UPDATER_ID = 'updatedProjects';
+
+    const RELATION_PROJECT_USER = 'projectUsers';
 
 
     /**
@@ -155,6 +159,14 @@ class User extends ActiveRecord implements IdentityInterface
     public function getUpdatedProjects()
     {
         return $this->hasMany(Project::class, ['creator_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProjectUsers()
+    {
+        return $this->hasMany(ProjectUser::class, ['user_id' => 'id']);
     }
 
 

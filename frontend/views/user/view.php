@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\User */
@@ -44,5 +45,33 @@ $this->params['breadcrumbs'][] = $this->title;
             'updated_at:datetime',
         ],
     ]) ?>
+
+    <br>
+    <br>
+    <br>
+
+    <?= GridView::widget(
+        [
+            'dataProvider' => $dataProvider,
+            'columns' =>
+                [
+                    [
+                        'attribute' => 'Project',
+                        'format' => 'html',
+                        'value' => function (\common\models\ProjectUser $model) {
+                            return Html::a($model->project->title, ['project/view/', 'id' => $model->project_id]);
+                        }
+
+                    ],
+                    [
+                        'attribute' => 'Role',
+                        'value' => function (\common\models\ProjectUser $model) {
+                            return $model->role;
+                        }
+                    ],
+
+                ],
+            'summary' => false,
+        ]); ?>
 
 </div>

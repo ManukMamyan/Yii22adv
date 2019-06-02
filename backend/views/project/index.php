@@ -25,15 +25,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
             'id',
             'title',
             'description:ntext',
-            'active',
+            [
+                'attribute' => 'active',
+                'filter' => common\models\Project::STATUSES_LABELS,
+                'value' => function (common\models\Project $model) {
+                    return common\models\Project::STATUSES_LABELS[$model->active];
+                }
+
+            ],
             'creator_id',
             //'updater_id',
-            //'created_at',
+            'created_at:datetime',
             //'updated_at',
 
             ['class' => 'yii\grid\ActionColumn'],

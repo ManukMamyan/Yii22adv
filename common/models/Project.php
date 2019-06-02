@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use lhs\Yii2SaveRelationsBehavior\SaveRelationsBehavior;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
@@ -25,6 +26,14 @@ use yii\behaviors\BlameableBehavior;
  */
 class Project extends \yii\db\ActiveRecord
 {
+    const STATUS_NOT_ACTIVE = 0;
+    const STATUS_ACTIVE = 1;
+
+    const STATUSES_LABELS = [
+        self::STATUS_NOT_ACTIVE=> 'неактивен',
+        self::STATUS_ACTIVE => 'активен'
+    ];
+
     const RELATION_TASKS_PROJECT_ID = 'projectTasks';
     const RELATION_PROJECT_USER = 'projectUsers';
     const RELATION_PROJECTS_CREATOR_ID = 'creator';
@@ -62,7 +71,13 @@ class Project extends \yii\db\ActiveRecord
                 'class' => BlameableBehavior::class,
                 'createdByAttribute' => 'creator_id',
                 'updatedByAttribute' => 'updater_id'
-            ]
+            ],
+            'saveRelations' => [
+                'class' => SaveRelationsBehavior::class,
+                'relations' => [
+                    self::RELATION_PROJECT_USER,
+                ],
+            ],
         ];
     }
 

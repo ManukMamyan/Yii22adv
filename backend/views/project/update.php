@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @var \common\models\Project $model
+ * @var  [] $user_id
+ */
+
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
@@ -16,6 +21,7 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?= $this->render('_form', [
         'model' => $model,
+        'user_id' => $user_id,
     ]) ?>
 
 </div>
