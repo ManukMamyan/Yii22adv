@@ -44,3 +44,6 @@ phpunit.phar
 
 # yii vendor
 vendor
+
+#upload file
+/frontend/web/upload
