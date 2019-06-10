@@ -4,6 +4,10 @@
  * @var \common\models\Project $model
  * @var  [] $user_id
  */
+/**
+ * @var \common\models\Project $model
+ * @var  $user_id array
+ */
 
 use yii\helpers\Html;
 

@@ -13,7 +13,6 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <?= $form->field($model, 'username')->textInput() ?>
-    <?= $form->field($model, 'email')->textInput() ?>
     <?= $form->field($model, 'password')->textInput() ?>
     <?= $form->field($model, 'status')->dropDownList(\common\models\User::STATUS_LABELS) ?>
     <?= $form->field($model, 'avatar')

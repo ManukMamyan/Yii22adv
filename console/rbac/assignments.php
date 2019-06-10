@@ -1,12 +1,12 @@
 <?php
 return [
     1 => [
-        'admin',
+        'manager',
     ],
     2 => [
-        'user',
+        'developer',
     ],
     3 => [
-        'user',
+        'tester',
     ],
 ];

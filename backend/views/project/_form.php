@@ -8,7 +8,7 @@ use unclead\multipleinput\MultipleInput;
 /* @var $this yii\web\View */
 /* @var $model common\models\Project */
 /* @var $form yii\widgets\ActiveForm */
-/* @var $user_id [] */
+/* @var $user_id array */
 ?>
 
 <div class="project-form">

@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use common\services\AuthItems;
 use Yii;
 use common\models\User;
 use common\models\search\UserSearch;
@@ -9,6 +10,7 @@ use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\filters\VerbFilter;
 
 /**
@@ -24,10 +26,13 @@ class UserController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
+                'denyCallback' => function ($rule, $action) {
+                    throw new ForbiddenHttpException('У вас нет доступа к этой странице');
+                },
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['admin'],
+                        'roles' => [AuthItems::ROLE_MANAGER],
                     ],
                 ],
             ],

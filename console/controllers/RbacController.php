@@ -2,6 +2,7 @@
 
 namespace console\controllers;
 
+use common\services\AuthItems;
 use Yii;
 use yii\console\Controller;
 
@@ -11,19 +12,24 @@ class RbacController extends Controller
     {
         $auth = Yii::$app->authManager;
 
-        // добавляем роль "user".
-        $user = $auth->createRole('user');
-        $auth->add($user);
+        // добавляем роль "tester".
+        $tester = $auth->createRole(AuthItems::ROLE_TESTER);
+        $auth->add($tester);
+
+        // добавляем роль "developer".
+        $developer = $auth->createRole(AuthItems::ROLE_DEVELOPER);
+        $auth->add($developer);
+        $auth->addChild($developer, $tester);
 
         // добавляем роль "admin" и даём разрешения роли "user"
-        $admin = $auth->createRole('admin');
-        $auth->add($admin);
-        $auth->addChild($admin, $user);
+        $manager = $auth->createRole(AuthItems::ROLE_MANAGER);
+        $auth->add($manager);
+        $auth->addChild($manager, $developer, $tester);
 
 
         // Назначение ролей пользователям
-        $auth->assign($admin, 1);
-        $auth->assign($user, 2);
-        $auth->assign($user, 3);
+        $auth->assign($manager, 1);
+        $auth->assign($developer, 2);
+        $auth->assign($tester, 3);
     }
 }

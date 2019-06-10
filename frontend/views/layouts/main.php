@@ -44,6 +44,9 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
+        $menuItems[] = ['label' => 'Projects', 'url' => ['/project/index']];
+        $menuItems[] = ['label' => 'Tasks', 'url' => ['/task/index']];
+        $menuItems[] = ['label' => 'Profile', 'url' => ['/user/profile']];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(
@@ -52,7 +55,6 @@ AppAsset::register($this);
             )
             . Html::endForm()
             . '</li>';
-        $menuItems[] = ['label' => 'Profile', 'url' => ['/user/profile']];
     }
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],

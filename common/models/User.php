@@ -32,6 +32,8 @@ use yii\web\IdentityInterface;
  * @property Project[] $updatedProjects
  *
  * * @property ProjectUser[] $projectUsers
+ *
+ * @mixin UploadImageBehavior
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -341,5 +343,24 @@ class User extends ActiveRecord implements IdentityInterface
             $this->generateAuthKey();
         }
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @return \common\models\query\UserQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new \common\models\query\UserQuery(get_called_class());
+    }
+
+    public function getAvatar()
+    {
+        return $this->getThumbUploadUrl('avatar', self::AVATAR_ICO);
+    }
+
+    public function getUsername()
+    {
+        return $this->username;
     }
 }

@@ -132,4 +132,15 @@ class Task extends \yii\db\ActiveRecord
         return new \common\models\query\TaskQuery(get_called_class());
     }
 
+    /**
+     * Метод позволяет получить всех пользователей и их роли в проекте,
+     * к которому относиться задача
+     * @return array
+     */
+    public function getTaskUserRoles()
+    {
+
+        return $this->project->getprojectUsers()->select('role')->indexBy('user_id')->column();
+    }
+
 }

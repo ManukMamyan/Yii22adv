@@ -3,12 +3,14 @@
 namespace backend\controllers;
 
 use common\models\User;
+use common\services\AuthItems;
 use Yii;
 use common\models\Project;
 use common\models\search\ProjectSearch;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -25,10 +27,18 @@ class ProjectController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
+                'denyCallback' => function ($rule, $action) {
+                    throw new ForbiddenHttpException('У вас нет доступа к этой странице');
+                },
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['admin'],
+                        'roles' => [AuthItems::ROLE_MANAGER],
+                    ],
+                    [
+                        'allow' =>true,
+                        'actions' => ['index', 'view'],
+                        'roles' => [AuthItems::ROLE_DEVELOPER, AuthItems::ROLE_TESTER],
                     ],
                 ],
             ],

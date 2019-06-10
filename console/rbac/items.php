@@ -1,12 +1,18 @@
 <?php
 return [
-    'user' => [
+    'tester' => [
         'type' => 1,
     ],
-    'admin' => [
+    'developer' => [
         'type' => 1,
         'children' => [
-            'user',
+            'tester',
+        ],
+    ],
+    'manager' => [
+        'type' => 1,
+        'children' => [
+            'developer',
         ],
     ],
 ];

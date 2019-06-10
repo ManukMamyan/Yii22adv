@@ -2,12 +2,14 @@
 
 namespace backend\controllers;
 
+use common\services\AuthItems;
 use Yii;
 use common\models\Task;
 use common\models\search\TaskSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\filters\VerbFilter;
 
 /**
@@ -23,15 +25,23 @@ class TaskController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
+                'denyCallback' => function ($rule, $action) {
+                    throw new ForbiddenHttpException('У вас нет доступа к этой странице');
+                },
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['admin'],
+                        'roles' => [AuthItems::ROLE_MANAGER],
+                    ],
+                    [
+                        'allow' =>true,
+                        'actions' => ['index', 'view'],
+                        'roles' => [AuthItems::ROLE_DEVELOPER, AuthItems::ROLE_TESTER],
                     ],
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],

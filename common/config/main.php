@@ -9,6 +9,14 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+        'i18n' => [
+            'translations' => [
+                'yii2mod.comments' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@yii2mod/comments/messages',
+                ],
+            ],
+        ],
         'authManager' => [
             'class' => 'yii\rbac\PhpManager',
             'itemFile' => '@console/rbac/items.php',
@@ -19,6 +27,21 @@ return [
         ],
         'notificationService' => [
             'class' => common\services\NotificationService::class
+        ],
+        'taskService' => [
+            'class' => common\services\TaskService::class,
+            'on ' . common\services\TaskService::EVENT_ASSIGN_TASK =>
+            function(\common\services\TakeTaskEvent $event)
+            {
+                Yii::$app->notificationService
+                    ->notifyAboutTakingTask($event->user, $event->task);
+            },
+            'on ' . common\services\TaskService::EVENT_COMPLETE_TASK =>
+                function(\common\services\TakeTaskEvent $event)
+                {
+                    Yii::$app->notificationService
+                        ->notifyAboutCompletingTask($event->user, $event->task);
+                },
         ],
         'projectService' => [
             'class' => common\services\ProjectService::class,
@@ -31,6 +54,9 @@ return [
     'modules' => [
         'chat' => [
             'class' => 'common\modules\chat\Module',
+        ],
+        'comment' => [
+            'class' => 'yii2mod\comments\Module',
         ],
     ],
 ];

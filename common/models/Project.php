@@ -30,7 +30,7 @@ class Project extends \yii\db\ActiveRecord
     const STATUS_ACTIVE = 1;
 
     const STATUSES_LABELS = [
-        self::STATUS_NOT_ACTIVE=> 'неактивен',
+        self::STATUS_NOT_ACTIVE => 'неактивен',
         self::STATUS_ACTIVE => 'активен'
     ];
 
@@ -38,6 +38,7 @@ class Project extends \yii\db\ActiveRecord
     const RELATION_PROJECT_USER = 'projectUsers';
     const RELATION_PROJECTS_CREATOR_ID = 'creator';
     const RELATION_PROJECTS_UPDATER_ID = 'updater';
+
     /**
      * {@inheritdoc}
      */
@@ -101,7 +102,7 @@ class Project extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getProjectTasks ()
+    public function getProjectTasks()
     {
         return $this->hasMany(Task::class, ['project_id' => 'id']);
     }
